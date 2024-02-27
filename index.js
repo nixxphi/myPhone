@@ -264,5 +264,5 @@ for (const contact of sampleContacts) {
 const observer1 = new Observer(phone);
 const observer2 = new Observer2(phone);
 
-// LETS BRING BACK THAT MAIN MENU AGAIN
+// LETS BRING BACK THAT MAIN MENU ONE LAST TIME
 mainMenu();
