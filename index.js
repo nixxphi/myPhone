@@ -1,11 +1,16 @@
 const readline = require('readline');
 
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 class Phone {
   constructor() {
     this.phoneNumbers = new Set();
     this.viewers = [];
     this.callHistory = [];
-    this.regexPattern = /^(0[0-9]{9}|\+[0-9]{3}[0-9]{10})$/;
+    this.regexPattern = /^(0[0-9]{10}|\+[0-9]{3}[0-9]{10})$/;
   }
 
   // Method to add a new phone number
@@ -33,12 +38,12 @@ class Phone {
     }
   }
 
-  // Method to add a viewer
+  // to add a viewer
   addViewer(viewer) {
     this.viewers.push(viewer);
   }
 
-  // Method to remove a viewer
+  // to remove a viewer
   removeViewer(viewer) {
     const index = this.viewers.indexOf(viewer);
     if (index !== -1) {
@@ -46,7 +51,7 @@ class Phone {
     }
   }
 
-  // Method to display call history
+  // display call history
   displayCallHistory() {
     console.log("Call History:");
     for (const phoneNumber of this.callHistory) {
