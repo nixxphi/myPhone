@@ -104,7 +104,7 @@ class Contacts extends Phone {
     }
   }
 
-  // TO DELETE A CONTACT
+  // TO DELETE A CONTACT 🚮
   removeContact(name) {
     const index = this.contacts.findIndex(c => c.name === name);
     if (index !== -1) {
@@ -184,7 +184,7 @@ function viewContacts(contacts, phone) {
     }
 
     const contact = contacts.contacts[index];
-    rl.question(`Do you want to (1) dial ${contact.name}, (2) edit ${contact.name}, (3) remove ${contact.name}, or (4) view call history? `, (answer) => {
+    rl.question(`Do you want to (1) dial ${contact.name}📞, (2) edit ${contact.name}✍️, (3) remove ${contact.name}🚮, or (4) view call history? 📑`, (answer) => {
       switch (answer) {
         case '1':
           phone.dialPhoneNumber(contact.phoneNumber);
@@ -244,15 +244,16 @@ function mainMenu() {
   });
 }
 
-// AND X SAID "LET THERE BE A PHONE AND CONTACTS"
+// AND X SAID "LET THERE BE A PHONE AND CONTACTS"📱
 const phone = new Phone();
 const contacts = new Contacts();
 
 // ADD THE SAMPLE CONTACTS TO THE CONTACTS OBJECT, I COULDN'T FIND THE RIGHT METHOD TO GENRATE AN ENDURING CONTACTS LIST. IF YOU HAVE A CLUE ON THAT, PLEASE TELL ME.
 const sampleContacts = [
-  { name: 'Marachukwu', phoneNumber: '08034567890' },
-  { name: 'Uche', phoneNumber: '0907654321' },
-  { name: 'Gloria', phoneNumber: '+2347049309321' },
+  { name: 'Chioma', phoneNumber: '08034567890' },
+  { name: 'Ada', phoneNumber: '0907654321' },
+  { name: 'Accountant', phoneNumber: '+2347049309321' },
+  //😂😂😂
   { name: 'Chukwuma', phoneNumber: '09756757859' }
 ];
 for (const contact of sampleContacts) {
