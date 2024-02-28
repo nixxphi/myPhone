@@ -1,17 +1,24 @@
 const readline = require('readline');
 const fs = require('fs');
+const path = require('path');
 
+// JSON FILE PATHS. FINALLY GOT IT WORKING RIGHT.
+const contactsPath = path.resolve(__dirname, 'contacts.json');
+const callHistoryPath = path.resolve(__dirname, 'call_history.json');
+
+// INITIALIZING INTERFACE
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
+//LET US BEGIN
 class Phone {
   constructor() {
     this.phoneNumbers = new Set();
     this.observers = [];
-    this.callHistory = [];
-    this.contacts = [];
+    this.loadContactsFromJSON();
+    this.loadCallHistoryFromJSON();
     this.regexPattern = /^(0[0-9]{10}|\+[0-9]{3}[0-9]{10})$/;
   }
 
@@ -47,8 +54,9 @@ class Phone {
     }
 
     console.log(`Dialing ${phoneNumber}`);
+
     // ADDS CALL TO CALL HISTORY SO YOUR BAE CAN CATCH YOU
-    this.callHistory.push(phoneNumber);
+    this.addCallToHistory(phoneNumber);
     this.notifyObservers(phoneNumber, "Now Dialing");
   }
 
@@ -80,23 +88,46 @@ class Phone {
     }
   }
 
-  // METHOD TO SAVE CONTACTS TO JSON... FINALLY FOUND IT
+  // METHOD TO SAVE CONTACTS TO JSON
   saveContactsToJSON() {
-    fs.writeFileSync('index.json', JSON.stringify(this.contacts));
+    fs.writeFileSync(contactsPath, JSON.stringify(this.contacts, null, 2));
   }
 
   // METHOD TO LOAD CONTACTS FROM JSON 
   loadContactsFromJSON() {
-    if (fs.existsSync('index.json')) {
-      this.contacts = JSON.parse(fs.readFileSync('index.json'));
+    if (fs.existsSync(contactsPath)) {
+      this.contacts = JSON.parse(fs.readFileSync(contactsPath, 'utf8'));
+    } else {
+      this.contacts = [];
+      this.saveContactsToJSON();
     }
+  }
+
+  // METHOD TO SAVE CALL HISTORY TO JSON
+  saveCallHistoryToJSON() {
+    fs.writeFileSync(callHistoryPath, JSON.stringify(this.callHistory, null, 2));
+  }
+
+  // METHOD TO LOAD CALL HISTORY FROM JSON
+  loadCallHistoryFromJSON() {
+    if (fs.existsSync(callHistoryPath)) {
+      this.callHistory = JSON.parse(fs.readFileSync(callHistoryPath, 'utf8'));
+    } else {
+      this.callHistory = [];
+      this.saveCallHistoryToJSON();
+    }
+  }
+
+  // METHOD TO ADD CALL TO HISTORY
+  addCallToHistory(phoneNumber) {
+    this.callHistory.push({ phoneNumber, timestamp: new Date().toISOString() });
+    this.saveCallHistoryToJSON();
   }
 }
 
 class Contacts extends Phone {
   constructor() {
     super();
-    this.loadContactsFromJSON();
   }
 
   // METHOD TO ADD A NEW CONTACT
@@ -135,7 +166,7 @@ class Contacts extends Phone {
     }
   }
 
-  // TO DISPLAY ALL CONTACTS... I'LL HAVE TO ADD A HIDDEN CONTACTS SECTION LATER LOL
+  // TO DISPLAY ALL CONTACTS... I'LL HAVE TO ADD A HIDdEN CONTACTS SECTION LATER LOL
   displayContacts() {
     console.log("Contacts:");
     for (let i = 0; i < this.contacts.length; i++) {
@@ -144,63 +175,63 @@ class Contacts extends Phone {
   }
 }
 
-// Observer class
-class Observer {
+// CREATING OBSERVER 1
+class Observer1 {
   constructor(phone) {
     this.phone = phone;
     this.phone.addObserver(this);
   }
 
-  // Method to update the observer
+  // UPDATE OBSERVER 1
   update(phoneNumber, action) {
-    console.log(`Now Dialing ${phoneNumber}`);
+    console.log(`Observer1: ${phoneNumber}`);
   }
 }
 
-// Observer class for Observer2
+// CREATING CLASS FOR OBERVER 2
 class Observer2 {
   constructor(phone) {
     this.phone = phone;
     this.phone.addObserver(this);
   }
 
-  // Method to update the observer
+  //UPDATE OBSERVER 2
   update(phoneNumber, action) {
     const last10Digits = phoneNumber.slice(-10);
     console.log(`Observer2: Now Dialing ${last10Digits}`);
   }
 }
 
-// Function to dial a phone number
+// TO DIAL A PHONE NUMBER
 function dialPhoneNumber(phone) {
   rl.question("Enter phone number: ", (input) => {
     phone.dialPhoneNumber(input);
-    // Return to previous menu
+    // GO BACK
     mainMenu();
   });
 }
 
-// Function for adding a new contact
+// FOR ADDING A NEW CONTACT
 function addContact(contacts, phone) {
   rl.question("Enter contact name: ", (name) => {
     rl.question("Enter contact phone number(080 or +234 format): ", (phoneNumber) => {
       contacts.addContact(name, phoneNumber);
       phone.addPhoneNumber(phoneNumber);
       console.log(`New contact ${name} saved.`);
-      // Return to previous menu
+      // LETS GO BACK AGAIN
       mainMenu();
     });
   });
 }
 
-// Function for viewing contacts
+// FOR VIEWING CONTACTS ON THE INTERFACE.
 function viewContacts(contacts, phone) {
   contacts.displayContacts();
   rl.question("Enter the index of the contact you want to interact with: ", (index) => {
     index = parseInt(index) - 1;
     if (index < 0 || index >= contacts.contacts.length) {
       console.log("Invalid contact index");
-      // Return to previous menu
+      // GO BACK
       mainMenu();
       return;
     }
@@ -210,35 +241,35 @@ function viewContacts(contacts, phone) {
       switch (answer) {
         case '1':
           phone.dialPhoneNumber(contact.phoneNumber);
-          // Return to previous menu
+          // SNAP BACK TO THE PREVIOUS MENU
           mainMenu();
           break;
         case '2':
           rl.question("Enter new phone number: ", (newPhoneNumber) => {
             contacts.editContact(contact.name, newPhoneNumber);
             console.log(`Contact ${contact.name} edited successfully.`);
-            // Return to previous menu
+            // BACK SLIDE A BIT
             mainMenu();
           });
           break;
         case '3':
           contacts.removeContact(contact.name);
-          console.log(`Contact ${contact.name} removed successfully.`);
-          // Return to previous menu
+          console.log(`Contact ${contact.name} erased successfully.`);
+          // RETURN TO THE PAST NOW!
           mainMenu();
           break;
         case '4':
           phone.displayCallHistory();
-          // Return to previous menu
+          // MOON-WALKING TO THE PREVIOUS MENU
           mainMenu();
           break;
         case '5':
-          // Return to previous menu
+          // BACK-TRACKING
           mainMenu();
           break;
         default:
           console.log("Invalid choice");
-          // Return to previous menu
+          // HEADING BACK
           mainMenu();
           break;
       }
@@ -246,7 +277,7 @@ function viewContacts(contacts, phone) {
   });
 }
 
-// Function for the main menu
+// HERE'S MY INFAMOUS MAIN MENU... I'VE PASTED THAT ALL OVER THIS THING 
 function mainMenu() {
   rl.question("What do you want to do? \n(1) Dial phone number, \n(2) View contacts, \n(3) Add new contact, \n(4) View call history: ", (answer) => {
     switch (answer) {
@@ -273,23 +304,12 @@ function mainMenu() {
   });
 }
 
-// Let's create phone and contacts instances
+// AND FINALLY... X SAID: "LET THERE BE PHONE... AND CONTACTS"
 const phone = new Phone();
 const contacts = new Contacts();
 
-// Add the sample contacts to the contacts object
-const sampleContacts = [
-  { name: 'Marachukwu', phoneNumber: '08034567890' },
-  { name: 'Uche', phoneNumber: '0907654321' },
-  { name: 'Gloria', phoneNumber: '+2347049309321' },
-  { name: 'Chukwuma', phoneNumber: '09756757859' }
-];
-for (const contact of sampleContacts) {
-  contacts.addContact(contact.name, contact.phoneNumber);
-}
-
 // Create observers
-const observer1 = new Observer(phone);
+const observer1 = new Observer1(phone);
 const observer2 = new Observer2(phone);
 
 // Show the main menu
