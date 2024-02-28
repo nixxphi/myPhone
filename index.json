@@ -1,0 +1,14 @@
+const fs = require('fs');
+
+// here's hoping this works 
+const sampleContacts = [
+  { name: 'Cypher', phoneNumber: '+23436392274439' },
+  { name: 'Tuzy', phoneNumber: '09876543210' },
+  { name: 'RedX', phoneNumber: '09087678922'}
+];
+
+fs.writeFileSync('contacts.json', JSON.stringify(sampleContacts, null, 2));
+const jsonData = fs.readFileSync('contacts.json', 'utf8');
+const parsedContacts = JSON.parse(jsonData);
+
+console.log(parsedContacts);
