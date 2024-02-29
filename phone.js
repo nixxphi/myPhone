@@ -308,9 +308,9 @@ function mainMenu() {
 const phone = new Phone();
 const contacts = new Contacts();
 
-// Create observers
+// INSTANTIATING PERVY VIEWER. SORRY OBSERVER
 const observer1 = new Observer1(phone);
 const observer2 = new Observer2(phone);
 
-// Show the main menu
+// MY MVP MAIN MENU ONE MORE TIME
 mainMenu();
