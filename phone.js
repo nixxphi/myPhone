@@ -45,6 +45,8 @@ class Phone {
       console.log(`Phone number ${input} not found in contacts`);
       return;
     }
+
+    console.log(`Dialing ${phoneNumber}`);
     this.addCallToHistory(phoneNumber);
     this.notifyObservers(phoneNumber, "Now Dialing");
   }
@@ -102,7 +104,14 @@ class Phone {
     this.saveCallHistoryToJSON();
   }
 
-  //TO EDIT CONTACTS
+  displayContacts() {
+    console.log("Contacts:");
+    for (let i = 0; i < this.contacts.length; i++) {
+      console.log(`${i + 1}: ${this.contacts[i].name}: ${this.contacts[i].phoneNumber}`);
+    }
+  }
+
+  // NEW EDIT CONTACT FUNCTION
   editContact(name, newPhoneNumber) {
     const contact = this.contacts.find(c => c.name === name);
     if (contact) {
@@ -114,7 +123,7 @@ class Phone {
   }
 }
 
-class Observer1 {
+class Observer {
   constructor(phone) {
     this.phone = phone;
     this.phone.addObserver(this);
@@ -171,7 +180,7 @@ function displayCallHistory(phone) {
   mainMenu(phone);
 }
 
-// THIS IS FOR LISTING MY CONTACTS IN THE TERMINAL ON REQUEST 
+// UPDATED VIEW CONTACTS FUNCTION
 function viewContacts(phone) {
   phone.displayContacts();
   rl.question("Enter the index of the contact you want to interact with: ", (index) => {
@@ -191,7 +200,7 @@ function viewContacts(phone) {
           break;
         case '2':
           rl.question("Enter new phone number: ", (newPhoneNumber) => {
-            phone.editContact(contact.name, newPhoneNumber); 
+            phone.editContact(contact.name, newPhoneNumber); // CALL THE EDIT FUNCTION HERE
             console.log(`Contact ${contact.name} edited successfully.`);
             mainMenu(phone);
           });
@@ -216,7 +225,7 @@ function viewContacts(phone) {
 
 
 function mainMenu(phone) {
-  rl.question("What do you want to do? \n(1) Add new contact, \n(2) Remove phone number, \n(3) Dial phone number, \n(4) View contacts list, \n(5) View call logs: ", (answer) => {
+  rl.question("What do you want to do? \n(1) Add new contact, \n(2) Delete contact, \n(3) Dial phone number, \n(4) View contacts list, \n(5) View call logs: ", (answer) => {
     switch (answer) {
       case '1':
         addContact(phone);
@@ -242,6 +251,6 @@ function mainMenu(phone) {
 }
 
 const phone = new Phone();
-const observer1 = new Observer1(phone);
+const observer = new Observer(phone);
 const observer2 = new Observer2(phone);
 mainMenu(phone);
