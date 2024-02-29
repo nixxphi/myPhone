@@ -45,8 +45,6 @@ class Phone {
       console.log(`Phone number ${input} not found in contacts`);
       return;
     }
-
-    console.log(`Dialing ${phoneNumber}`);
     this.addCallToHistory(phoneNumber);
     this.notifyObservers(phoneNumber, "Now Dialing");
   }
@@ -104,7 +102,7 @@ class Phone {
     this.saveCallHistoryToJSON();
   }
 
-  // NEW EDIT CONTACT FUNCTION
+  //TO EDIT CONTACTS
   editContact(name, newPhoneNumber) {
     const contact = this.contacts.find(c => c.name === name);
     if (contact) {
@@ -116,14 +114,14 @@ class Phone {
   }
 }
 
-class Observer {
+class Observer1 {
   constructor(phone) {
     this.phone = phone;
     this.phone.addObserver(this);
   }
 
   update(phoneNumber, action) {
-    console.log(`Now Dialing ${phoneNumber}`);
+    console.log(`Observer1: ${phoneNumber}`);
   }
 }
 
@@ -173,7 +171,7 @@ function displayCallHistory(phone) {
   mainMenu(phone);
 }
 
-// UPDATED VIEW CONTACTS FUNCTION
+// THIS IS FOR LISTING MY CONTACTS IN THE TERMINAL ON REQUEST 
 function viewContacts(phone) {
   phone.displayContacts();
   rl.question("Enter the index of the contact you want to interact with: ", (index) => {
@@ -193,7 +191,7 @@ function viewContacts(phone) {
           break;
         case '2':
           rl.question("Enter new phone number: ", (newPhoneNumber) => {
-            phone.editContact(contact.name, newPhoneNumber); // CALL THE EDIT FUNCTION HERE
+            phone.editContact(contact.name, newPhoneNumber); 
             console.log(`Contact ${contact.name} edited successfully.`);
             mainMenu(phone);
           });
@@ -244,6 +242,6 @@ function mainMenu(phone) {
 }
 
 const phone = new Phone();
-const observer = new Observer(phone);
+const observer1 = new Observer1(phone);
 const observer2 = new Observer2(phone);
 mainMenu(phone);
